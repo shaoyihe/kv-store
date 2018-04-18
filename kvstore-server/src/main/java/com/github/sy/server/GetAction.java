@@ -20,13 +20,15 @@ public class GetAction extends Action {
     public ByteBuffer read(ByteBuffer buffer) {
         byte[] key = readSeq(buffer);
         byte[] val = Store.INSTANCE.get(key);
+        L.log.info("got get " + str(key) + " " + str(val));
         ByteBuffer byteBuffer;
         if (val == null) {
             byteBuffer = ByteBuffer.allocate(1);
             byteBuffer.put((byte) 0);
         } else {
-            byteBuffer = ByteBuffer.allocate(1 + val.length);
+            byteBuffer = ByteBuffer.allocate(1 + 4 + val.length);
             byteBuffer.put((byte) 1);
+            byteBuffer.putInt(val.length);
             byteBuffer.put(val);
         }
         byteBuffer.flip();

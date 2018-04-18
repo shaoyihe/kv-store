@@ -16,6 +16,10 @@ public abstract class Action {
         return val;
     }
 
+    public String str(byte[] bytes) {
+        return bytes == null ? null : new String(bytes);
+    }
+
     public abstract byte supportType();
 
     public static ByteBuffer processRequest(ByteBuffer buffer) {

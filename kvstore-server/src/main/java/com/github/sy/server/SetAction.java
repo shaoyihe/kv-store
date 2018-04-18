@@ -10,6 +10,7 @@ public class SetAction extends Action {
     public ByteBuffer read(ByteBuffer buffer) {
         byte[] key = readSeq(buffer);
         byte[] val = readSeq(buffer);
+        L.log.info("got set " + str(key) + " " + str(val));
         Store.INSTANCE.put(key, val);
         return ByteBuffer.wrap(new byte[]{0});
     }

@@ -21,7 +21,7 @@ public class Bootstrap implements Runnable {
     private Map<SocketChannel, ByteBuffer> dataMapper;
     private final InetSocketAddress listenAddress;
 
-    public Bootstrap(String address, int port) throws IOException {
+    public Bootstrap(String address, int port) {
         listenAddress = new InetSocketAddress(address, port);
         dataMapper = new HashMap<>();
     }
@@ -35,7 +35,7 @@ public class Bootstrap implements Runnable {
         serverChannel.register(this.selector, SelectionKey.OP_ACCEPT);
         L.log.info("Server started...");
 
-        new Thread(this).start();
+        run();
     }
 
     @Override
@@ -59,6 +59,8 @@ public class Bootstrap implements Runnable {
                         this.accept(key);
                     } else if (key.isReadable()) {
                         this.read(key);
+                    } else if (key.isWritable()) {
+                        this.write(key);
                     }
                 }
             } catch (Exception e) {
@@ -86,7 +88,11 @@ public class Bootstrap implements Runnable {
         SocketChannel channel = (SocketChannel) key.channel();
         ByteBuffer buffer = dataMapper.get(channel);
         int numRead = -1;
-        numRead = channel.read(buffer);
+        try {
+            numRead = channel.read(buffer);
+        } catch (Exception e) {
+            L.log.error("read error", e);
+        }
 
         if (numRead == -1) {
             this.dataMapper.remove(channel);
@@ -96,16 +102,26 @@ public class Bootstrap implements Runnable {
             channel.close();
             key.cancel();
             return;
+        } else {
+            key.interestOps(SelectionKey.OP_READ | SelectionKey.OP_WRITE);
         }
+    }
+
+    private void write(SelectionKey key) throws IOException {
+        SocketChannel channel = (SocketChannel) key.channel();
+        ByteBuffer buffer = dataMapper.get(channel);
         buffer.flip();
         ByteBuffer response = Action.processRequest(buffer);
         channel.write(response);
-        L.log.info("request " + toStr(buffer) + " and response " + toStr(response));
         buffer.clear();
+        key.interestOps(SelectionKey.OP_READ);
     }
 
     private String toStr(ByteBuffer req) {
         int len = req.limit();
+        if (req.position() > 0) {
+            req.flip();
+        }
         byte[] b = new byte[len];
         req.put(b);
         req.flip();
