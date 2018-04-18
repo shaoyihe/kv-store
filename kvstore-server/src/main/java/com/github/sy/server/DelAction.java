@@ -17,19 +17,19 @@ import java.nio.ByteBuffer;
  *  </pre>
  * on 2018/4/17.
  */
-public class GetAction extends Action {
+public class DelAction extends Action {
     @Override
     public ByteBuffer read(ByteBuffer buffer) {
         byte[] key = ByteBufferUtil.readSeq(buffer);
-        byte[] val = Store.INSTANCE.get(key);
-        L.log.info("got get " + str(key) + " " + str(val));
+        byte[] val = Store.INSTANCE.del(key);
+        L.log.info("del " + str(key) + " and got " + str(val));
         ByteBuffer byteBuffer;
         if (val == null) {
             byteBuffer = ByteBuffer.allocate(RESPONSE_TYPE_IN_BYTES);
-            byteBuffer.put(GET_NO_VAL);
+            byteBuffer.put(DEL_NO_VAL);
         } else {
             byteBuffer = ByteBuffer.allocate(RESPONSE_TYPE_IN_BYTES + DATA_SIZE_IN_BYTES + val.length);
-            byteBuffer.put(GET_SUCCESS);
+            byteBuffer.put(DEL_SUCCESS);
             ByteBufferUtil.putSeq(byteBuffer, val);
         }
         byteBuffer.flip();
@@ -38,6 +38,6 @@ public class GetAction extends Action {
 
     @Override
     public byte supportType() {
-        return GET_ACTION;
+        return DEL_ACTION;
     }
 }

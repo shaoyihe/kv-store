@@ -10,6 +10,7 @@
     <modules>
         <module>kvstore-server</module>
         <module>kvstore-client</module>
+        <module>kvstore-common</module>
     </modules>
 
     <name>kvstore</name>

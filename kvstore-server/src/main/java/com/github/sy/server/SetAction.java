@@ -1,5 +1,7 @@
 package com.github.sy.server;
 
+import com.github.sy.common.ByteBufferUtil;
+
 import java.nio.ByteBuffer;
 
 /**
@@ -8,8 +10,8 @@ import java.nio.ByteBuffer;
 public class SetAction extends Action {
     @Override
     public ByteBuffer read(ByteBuffer buffer) {
-        byte[] key = readSeq(buffer);
-        byte[] val = readSeq(buffer);
+        byte[] key = ByteBufferUtil.readSeq(buffer);
+        byte[] val = ByteBufferUtil.readSeq(buffer);
         L.log.info("got set " + str(key) + " " + str(val));
         Store.INSTANCE.put(key, val);
         return ByteBuffer.wrap(new byte[]{0});
@@ -17,6 +19,6 @@ public class SetAction extends Action {
 
     @Override
     public byte supportType() {
-        return 1;
+        return SET_ACTION;
     }
 }

@@ -13,6 +13,10 @@ public class Store {
         return store.get(new Key(key));
     }
 
+    public byte[] del(byte[] key) {
+        return store.remove(new Key(key));
+    }
+
     public byte[] put(byte[] key, byte[] val) {
         return store.put(new Key(key), val);
     }

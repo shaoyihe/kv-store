@@ -14,5 +14,12 @@
     <name>kvstore-server</name>
     <url>http://www.example.com</url>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.github.sy</groupId>
+            <artifactId>kvstore-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 
 </project>
