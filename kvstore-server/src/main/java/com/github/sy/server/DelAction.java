@@ -25,15 +25,10 @@ public class DelAction extends Action {
         L.log.info("del " + str(key) + " and got " + str(val));
         ByteBuffer byteBuffer;
         if (val == null) {
-            byteBuffer = ByteBuffer.allocate(RESPONSE_TYPE_IN_BYTES);
-            byteBuffer.put(DEL_NO_VAL);
+            return ByteBufferUtil.allocateWith(DEL_NO_VAL);
         } else {
-            byteBuffer = ByteBuffer.allocate(RESPONSE_TYPE_IN_BYTES + DATA_SIZE_IN_BYTES + val.length);
-            byteBuffer.put(DEL_SUCCESS);
-            ByteBufferUtil.putSeq(byteBuffer, val);
+            return ByteBufferUtil.allocateWithBytes(DEL_SUCCESS, val);
         }
-        byteBuffer.flip();
-        return byteBuffer;
     }
 
     @Override

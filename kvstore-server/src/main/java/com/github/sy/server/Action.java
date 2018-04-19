@@ -29,7 +29,7 @@ public abstract class Action implements ResponseType {
 
     private static Map<Byte, Action> ACTION_MAP = new HashMap<>();
 
-    {
+    static{
         put(new GetAction(), new SetAction(), new DelAction());
     }
 

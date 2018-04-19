@@ -13,8 +13,11 @@ public class SetAction extends Action {
         byte[] key = ByteBufferUtil.readSeq(buffer);
         byte[] val = ByteBufferUtil.readSeq(buffer);
         L.log.info("got set " + str(key) + " " + str(val));
-        Store.INSTANCE.put(key, val);
-        return ByteBuffer.wrap(new byte[]{0});
+        byte[] preVal = Store.INSTANCE.put(key, val);
+        if (preVal == null) {
+            return ByteBufferUtil.allocateWith(SET_WITH_NO_VAL);
+        }
+        return ByteBufferUtil.allocateWithBytes(SET_SUCCESS, preVal);
     }
 
     @Override

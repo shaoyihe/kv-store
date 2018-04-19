@@ -24,12 +24,18 @@ public class ByteBufferUtil {
 
     public static ByteBuffer allocateWith(byte type, String... vals) {
         byte[][] bytes = new byte[vals.length][];
-        int totalValBytes = 0;
         for (int i = 0; i < vals.length; ++i) {
             bytes[i] = vals[i].getBytes();
-            totalValBytes += bytes[i].length;
         }
-        ByteBuffer byteBuffer = ByteBuffer.allocate(1 + DATA_SIZE_IN_BYTES * vals.length + totalValBytes);
+        return allocateWithBytes(type, bytes);
+    }
+
+    public static ByteBuffer allocateWithBytes(byte type, byte[]... bytes) {
+        int totalValBytes = 0;
+        for (byte[] aByte : bytes) {
+            totalValBytes += aByte.length;
+        }
+        ByteBuffer byteBuffer = ByteBuffer.allocate(1 + DATA_SIZE_IN_BYTES * bytes.length + totalValBytes);
         byteBuffer.put(type);
         putSeq(byteBuffer, bytes);
         byteBuffer.flip();

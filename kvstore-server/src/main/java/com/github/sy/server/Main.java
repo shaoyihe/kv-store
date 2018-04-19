@@ -5,7 +5,7 @@ package com.github.sy.server;
  */
 public class Main {
     public static void main(String[] a) throws Exception {
-        new Bootstrap("localhost", 8035).startServer();
+        new Bootstrap("localhost", 8036).startServer();
         Thread.currentThread().join();
     }
 }
