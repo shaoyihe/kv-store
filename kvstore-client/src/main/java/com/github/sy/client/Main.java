@@ -7,7 +7,7 @@ import java.util.Scanner;
  */
 public class Main {
     public static void main(String[] a) throws Exception {
-        try (Connection connection = new Connection("localhost", 8036);) {
+        try (Connection connection = new Connection("localhost", 8033);) {
             String line = "";
             while (!(line = new Scanner(System.in).nextLine()).equals("end")) {
                 String[] command = line.split("\\s+");

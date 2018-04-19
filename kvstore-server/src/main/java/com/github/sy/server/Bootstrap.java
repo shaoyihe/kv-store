@@ -35,7 +35,7 @@ public class Bootstrap implements Runnable {
         serverChannel.register(this.selector, SelectionKey.OP_ACCEPT);
         L.log.info("Server started...");
 
-        run();
+        new Thread(this).start();
     }
 
     @Override
