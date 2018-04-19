@@ -56,11 +56,6 @@ public class Connection implements Closeable, ResponseType {
         return new String(ByteBufferUtil.readSeq(response));
     }
 
-
-    private ByteBuffer allocate(int dataSize) {
-        return ByteBuffer.allocate(RESPONSE_TYPE_IN_BYTES + dataSize);
-    }
-
     @Override
     public void close() throws IOException {
         client.close();

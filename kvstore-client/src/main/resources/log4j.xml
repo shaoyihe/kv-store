@@ -15,7 +15,6 @@
         </filter>
     </appender>
 
-
     <root>
         <priority value="info"/>
         <appender-ref ref="console"/>
