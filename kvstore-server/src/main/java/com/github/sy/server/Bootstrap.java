@@ -18,7 +18,7 @@ import java.util.Map;
  */
 public class Bootstrap implements Runnable {
     private volatile Selector selector;
-    private Map<SocketChannel, ByteBuffer> dataMapper;
+    private Map<SocketChannel, RequestBuffer> dataMapper;
     private final InetSocketAddress listenAddress;
 
     public Bootstrap(String address, int port) {
@@ -78,18 +78,17 @@ public class Bootstrap implements Runnable {
         SocketAddress remoteAddr = socket.getRemoteSocketAddress();
         L.log.info("Connected to: " + remoteAddr);
 
-        // 目前只允许一次请求总共1K
-        dataMapper.put(channel, ByteBuffer.allocate(10240));
+        dataMapper.put(channel, new RequestBuffer());
         channel.register(this.selector, SelectionKey.OP_READ);
     }
 
     //read from the socket channel
     private void read(SelectionKey key) throws IOException {
         SocketChannel channel = (SocketChannel) key.channel();
-        ByteBuffer buffer = dataMapper.get(channel);
+        RequestBuffer buffer = dataMapper.get(channel);
         int numRead = -1;
         try {
-            numRead = channel.read(buffer);
+            numRead = channel.read(buffer.curBuffer);
         } catch (Exception e) {
             L.log.error("read error", e);
         }
@@ -109,7 +108,8 @@ public class Bootstrap implements Runnable {
 
     private void write(SelectionKey key) throws IOException {
         SocketChannel channel = (SocketChannel) key.channel();
-        ByteBuffer buffer = dataMapper.get(channel);
+        ByteBuffer buffer = dataMapper.get(channel).curBuffer;
+//        ByteBuffer buffer = dataMapper.get(channel);
         buffer.flip();
         ByteBuffer response = Action.processRequest(buffer);
         channel.write(response);
