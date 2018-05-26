@@ -20,22 +20,26 @@ public class RequestBuffer {
     }
 
     public boolean hadRemain(int curRead) {
-        int limit = curBuffer.limit();
+        int capacity = curRead;
         if (totalBytes == 0) {
+            curBuffer.rewind();
+            curBuffer.get(); // skip type
             totalBytes = curBuffer.getInt();
-            if (totalBytes <= limit) {
-                curBuffer.flip();
-                return true;
+            if (totalBytes <= capacity) {
+                curBuffer.rewind();
+                return false;
             }
         }
-        if (totalBuffer.size() + limit <= totalBytes) {
+
+        if (totalBuffer.size() + capacity < totalBytes) {
+            byte[] bytes = curBuffer.array();
+            for (int i = 0; i < capacity; ++i) {
+                totalBuffer.add(bytes[i]);
+            }
+            curBuffer.clear();
             return true;
         }
-        byte[] bytes = curBuffer.array();
-        for (int i = 0; i < limit; ++i) {
-            totalBuffer.add(bytes[i]);
-        }
-        curBuffer.clear();
+        curBuffer.flip();
         return false;
     }
 
@@ -43,12 +47,17 @@ public class RequestBuffer {
         if (totalBuffer.size() == 0) {
             return curBuffer;
         }
-        ByteBuffer finalByteBuffer = ByteBuffer.allocate(totalBuffer.size() + curBuffer.limit() - 1);
-        return null;
+        ByteBuffer finalByteBuffer = ByteBuffer.allocate(totalBuffer.size() + curBuffer.limit());
+        for (byte b : totalBuffer) {
+            finalByteBuffer.put(b);
+        }
+        finalByteBuffer.put(curBuffer);
+        finalByteBuffer.rewind();
+        return finalByteBuffer;
     }
 
     public static void main(String[] a) {
-        ByteBuffer byteBuffer =ByteBuffer.allocate(10);
+        ByteBuffer byteBuffer = ByteBuffer.allocate(10);
         System.err.println(byteBuffer.array());
         System.err.println(byteBuffer.limit());
     }

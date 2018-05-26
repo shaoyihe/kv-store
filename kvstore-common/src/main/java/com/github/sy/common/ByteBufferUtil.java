@@ -35,8 +35,10 @@ public class ByteBufferUtil {
         for (byte[] aByte : bytes) {
             totalValBytes += aByte.length;
         }
-        ByteBuffer byteBuffer = ByteBuffer.allocate(1 + DATA_SIZE_IN_BYTES * bytes.length + totalValBytes);
+        int capacity = 1 + DATA_SIZE_IN_BYTES + DATA_SIZE_IN_BYTES * bytes.length + totalValBytes;
+        ByteBuffer byteBuffer = ByteBuffer.allocate(capacity);
         byteBuffer.put(type);
+        byteBuffer.putInt(capacity);
         putSeq(byteBuffer, bytes);
         byteBuffer.flip();
         return byteBuffer;

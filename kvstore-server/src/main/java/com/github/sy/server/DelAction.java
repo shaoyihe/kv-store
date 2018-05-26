@@ -21,7 +21,7 @@ public class DelAction extends Action {
     @Override
     public ByteBuffer read(ByteBuffer buffer) {
         byte[] key = ByteBufferUtil.readSeq(buffer);
-        byte[] val = Store.INSTANCE.del(key);
+        byte[] val = Store.get().del(key);
         L.log.info("del " + str(key) + " and got " + str(val));
         ByteBuffer byteBuffer;
         if (val == null) {

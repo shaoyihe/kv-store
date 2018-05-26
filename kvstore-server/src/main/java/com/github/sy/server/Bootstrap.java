@@ -101,31 +101,22 @@ public class Bootstrap implements Runnable {
             channel.close();
             key.cancel();
             return;
+        } else if (buffer.hadRemain(numRead)) {
+            key.interestOps(SelectionKey.OP_READ);
         } else {
-            key.interestOps(SelectionKey.OP_READ | SelectionKey.OP_WRITE);
+            key.interestOps(SelectionKey.OP_WRITE);
         }
     }
 
     private void write(SelectionKey key) throws IOException {
         SocketChannel channel = (SocketChannel) key.channel();
-        ByteBuffer buffer = dataMapper.get(channel).curBuffer;
-//        ByteBuffer buffer = dataMapper.get(channel);
-        buffer.flip();
+        RequestBuffer requestBuffer = dataMapper.get(channel);
+        ByteBuffer buffer = requestBuffer.toByteBuffer();
         ByteBuffer response = Action.processRequest(buffer);
         channel.write(response);
-        buffer.clear();
+        requestBuffer.clear();
         key.interestOps(SelectionKey.OP_READ);
     }
 
-    private String toStr(ByteBuffer req) {
-        int len = req.limit();
-        if (req.position() > 0) {
-            req.flip();
-        }
-        byte[] b = new byte[len];
-        req.put(b);
-        req.flip();
-        return new String(b);
-    }
 
 }

@@ -21,5 +21,9 @@ public class Store {
         return store.put(new Key(key), val);
     }
 
-    public static final Store INSTANCE = new Store();
+    private static final Store INSTANCE = new Store();
+
+    public static Store get(){
+        return INSTANCE;
+    }
 }

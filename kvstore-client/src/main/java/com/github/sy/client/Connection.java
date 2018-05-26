@@ -29,6 +29,7 @@ public class Connection implements Closeable, ResponseType {
         if (ok == GET_NO_VAL) {
             return null;
         }
+        response.getInt();
         return new String(ByteBufferUtil.readSeq(response));
     }
 
@@ -41,6 +42,7 @@ public class Connection implements Closeable, ResponseType {
         if (ok == DEL_NO_VAL) {
             return null;
         }
+        response.getInt();
         return new String(ByteBufferUtil.readSeq(response));
     }
 
@@ -53,6 +55,7 @@ public class Connection implements Closeable, ResponseType {
         if (ok == SET_WITH_NO_VAL) {
             return null;
         }
+        response.getInt();
         return new String(ByteBufferUtil.readSeq(response));
     }
 

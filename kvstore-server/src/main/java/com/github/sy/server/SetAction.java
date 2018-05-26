@@ -13,7 +13,7 @@ public class SetAction extends Action {
         byte[] key = ByteBufferUtil.readSeq(buffer);
         byte[] val = ByteBufferUtil.readSeq(buffer);
         L.log.info("got set " + str(key) + " " + str(val));
-        byte[] preVal = Store.INSTANCE.put(key, val);
+        byte[] preVal = Store.get().put(key, val);
         if (preVal == null) {
             return ByteBufferUtil.allocateWith(SET_WITH_NO_VAL);
         }

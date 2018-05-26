@@ -21,7 +21,7 @@ public class GetAction extends Action {
     @Override
     public ByteBuffer read(ByteBuffer buffer) {
         byte[] key = ByteBufferUtil.readSeq(buffer);
-        byte[] val = Store.INSTANCE.get(key);
+        byte[] val = Store.get().get(key);
         L.log.info("got get " + str(key) + " " + str(val));
         if (val == null) {
             return ByteBufferUtil.allocateWithBytes(GET_NO_VAL);

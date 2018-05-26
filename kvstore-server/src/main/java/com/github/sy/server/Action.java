@@ -22,6 +22,7 @@ public abstract class Action implements ResponseType {
     public static ByteBuffer processRequest(ByteBuffer buffer) {
         byte type = buffer.get();
         Action action = ACTION_MAP.get(type);
+        buffer.getInt();// skip total set
         ByteBuffer response = action.read(buffer);
         buffer.flip();
         return response;
